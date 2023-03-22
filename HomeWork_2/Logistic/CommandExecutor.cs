@@ -17,6 +17,7 @@ namespace Logistic.ConsoleClient
                 return true;
             }
         }
+
         public static void Add(string[] commandParts)
         {
             if (!CheckCommandParts(commandParts, 2)) { return; }
@@ -37,13 +38,14 @@ namespace Logistic.ConsoleClient
         public static void Get(string[] commandParts)
         {
             if (!CheckCommandParts(commandParts, 3)) { return; }
+            int.TryParse(commandParts[2], out int id);
             switch (commandParts[1])
             {
                 case "vehicle":
-                    InfrastructureBuilder.vehicleService.GetById(int.Parse(commandParts[2]));
+                    InfrastructureBuilder.vehicleService.GetById(id);
                     break;
                 case "warehouse":
-                    InfrastructureBuilder.warehouseService.GetById(int.Parse(commandParts[2]));
+                    InfrastructureBuilder.warehouseService.GetById(id);
                     break;
                 default:
                     DataEntryAndPrint.ColorPrint("**** unknown second part of the command", ConsoleColor.Red);
@@ -71,13 +73,14 @@ namespace Logistic.ConsoleClient
         public static void Update(string[] commandParts)
         {
             if (!CheckCommandParts(commandParts, 3)) { return; }
+            int.TryParse(commandParts[2], out int id);
             switch (commandParts[1])
             {
                 case "vehicle":
-                    InfrastructureBuilder.vehicleService.UpdateById(int.Parse(commandParts[2]));
+                    InfrastructureBuilder.vehicleService.UpdateById(id);
                     break;
                 case "warehouse":
-                    InfrastructureBuilder.warehouseService.UpdateById(int.Parse(commandParts[2]));
+                    InfrastructureBuilder.warehouseService.UpdateById(id);
                     break;
                 default:
                     DataEntryAndPrint.ColorPrint("**** unknown second part of the command", ConsoleColor.Red);
@@ -88,13 +91,14 @@ namespace Logistic.ConsoleClient
         public static void Delete(string[] commandParts)
         {
             if (!CheckCommandParts(commandParts, 3)) { return; }
+            int.TryParse(commandParts[2], out int id);
             switch (commandParts[1])
             {
                 case "vehicle":
-                    InfrastructureBuilder.vehicleService.DeleteById(int.Parse(commandParts[2]));
+                    InfrastructureBuilder.vehicleService.DeleteById(id);
                     break;
                 case "warehouse":
-                    InfrastructureBuilder.warehouseService.DeleteById(int.Parse(commandParts[2]));
+                    InfrastructureBuilder.warehouseService.DeleteById(id);
                     break;
                 default:
                     DataEntryAndPrint.ColorPrint("**** unknown second part of the command", ConsoleColor.Red);
@@ -122,13 +126,14 @@ namespace Logistic.ConsoleClient
         public static void LoadCargo(string[] commandParts)
         {
             if (!CheckCommandParts(commandParts, 3)) { return; }
+            int.TryParse(commandParts[2], out int id);
             switch (commandParts[1])
             {
                 case "vehicle":
-                    InfrastructureBuilder.vehicleService.LoadCargo(int.Parse(commandParts[2]));
+                    InfrastructureBuilder.vehicleService.LoadCargo(id);
                     break;
                 case "warehouse":
-                    InfrastructureBuilder.warehouseService.LoadCargo(int.Parse(commandParts[2]));
+                    InfrastructureBuilder.warehouseService.LoadCargo(id);
                     break;
                 default:
                     DataEntryAndPrint.ColorPrint("**** unknown second part of the command", ConsoleColor.Red);
@@ -139,13 +144,14 @@ namespace Logistic.ConsoleClient
         public static void UnloadCargo(string[] commandParts)
         {
             if (!CheckCommandParts(commandParts, 3)) { return; }
+            int.TryParse(commandParts[2], out int id);
             switch (commandParts[1])
             {
                 case "vehicle":
-                    InfrastructureBuilder.vehicleService.UnloadCargo(int.Parse(commandParts[2]));
+                    InfrastructureBuilder.vehicleService.UnloadCargo(id);
                     break;
                 case "warehouse":
-                    InfrastructureBuilder.warehouseService.UnloadCargo(int.Parse(commandParts[2]));
+                    InfrastructureBuilder.warehouseService.UnloadCargo(id);
                     break;
                 default:
                     DataEntryAndPrint.ColorPrint("**** unknown second part of the command", ConsoleColor.Red);
@@ -156,13 +162,14 @@ namespace Logistic.ConsoleClient
         public static void UnloadAllCargos(string[] commandParts)
         {
             if (!CheckCommandParts(commandParts, 3)) { return; }
+            int.TryParse(commandParts[2], out int id);
             switch (commandParts[1])
             {
                 case "vehicle":
-                    InfrastructureBuilder.vehicleService.UnloadAllCargos(int.Parse(commandParts[2]));
+                    InfrastructureBuilder.vehicleService.UnloadAllCargos(id);
                     break;
                 case "warehouse":
-                    InfrastructureBuilder.warehouseService.UnloadAllCargos(int.Parse(commandParts[2]));
+                    InfrastructureBuilder.warehouseService.UnloadAllCargos(id);
                     break;
                 default:
                     DataEntryAndPrint.ColorPrint("**** unknown second part of the command", ConsoleColor.Red);

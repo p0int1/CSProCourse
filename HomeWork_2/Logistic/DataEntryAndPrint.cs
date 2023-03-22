@@ -143,7 +143,8 @@ namespace Logistic.ConsoleClient
         public static Guid GetInputCargoGuid()
         {
             Console.Write("enter CargoGuid: ");
-            return Guid.Parse(Console.ReadLine());
+            Guid.TryParse(Console.ReadLine(), out var guid);
+            return guid;
         }
 
         public static void ColorPrint(string text, ConsoleColor color)
@@ -157,11 +158,9 @@ namespace Logistic.ConsoleClient
         {
             Random rnd = new Random();
             StringBuilder sb = new StringBuilder(Length - 1);
-            int Position = 0;
-
             for (int i = 0; i < Length; i++)
             {
-                Position = rnd.Next(0, characterSet.Length - 1);
+                int Position = rnd.Next(0, characterSet.Length - 1);
                 sb.Append(characterSet[Position]);
             }
             return sb.ToString();

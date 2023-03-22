@@ -1,40 +1,30 @@
-﻿using Logistic.ConsoleClient.Models;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.Linq;
-using System.Xml;
-using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace Logistic.ConsoleClient.Repositories
 {
-    public class XmlRepository<T>
+    public class XmlRepository<T> where T : class
     {
+        XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
+
         public void Create(T entity, string reportDir)
         {
             var reportPath = Path.Combine(reportDir,
                 entity.GetType().GetGenericArguments()[0].ToString().Split('.').Last() +
                 $"_{DateTime.Now.ToString("MM.dd.yyyy_HHmmss")}.xml");
-
-            using (StreamWriter sw = new StreamWriter(reportPath, false))
+            using (FileStream fs = new FileStream(reportPath, FileMode.OpenOrCreate))
             {
-                string json = JsonConvert.SerializeObject(entity);
-                XNode xml = JsonConvert.DeserializeXNode("{\"entity\":" + json + "}", "root");
-                sw.WriteLine(xml);
+                xmlSerializer.Serialize(fs, entity);
             }
         }
 
-        public void Read(string filePath)
+        public T Read(string filePath)
         {
-            using (StreamReader sw = new StreamReader(filePath))
+            using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate))
             {
-                string xml = sw.ReadToEnd();
-                XmlDocument doc = new XmlDocument();
-                doc.LoadXml(xml);
-                string json = JsonConvert.SerializeXmlNode(doc);
-                Console.WriteLine(json);
-                //return JsonConvert.DeserializeObject<T>(json);
+                return xmlSerializer.Deserialize(fs) as T;
             }
         }
     }

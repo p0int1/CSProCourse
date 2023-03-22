@@ -8,7 +8,7 @@ namespace Logistic.ConsoleClient.Services
 {
     public class WarehouseService
     {
-        static int lastWarehouseId = 0;
+        public int lastWarehouseId = 0;
         Warehouse warehouse;
         List<Warehouse> listWarehouse;
         public InMemeoryRepository<Warehouse> memoryRepositoryWarehouse;

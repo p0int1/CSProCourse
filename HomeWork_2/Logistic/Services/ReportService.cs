@@ -50,6 +50,11 @@ namespace Logistic.ConsoleClient.Services
 
         public void LoadReport(string filePath)
         {
+            if (!File.Exists(filePath)) 
+            {
+                DataEntryAndPrint.ColorPrint($"**** file {filePath} not exist!", ConsoleColor.Red);
+                return; 
+            }
             var reportType = filePath.Split('.').Last();
             var entityType = filePath.Contains("vehicle") ? "vehicle" : "warehouse";
             var actionType = $"{entityType}.{reportType}";
@@ -59,25 +64,33 @@ namespace Logistic.ConsoleClient.Services
                     vehicles = vehicleJson.Read(filePath);
                     InfrastructureBuilder.vehicleService.memoryRepositoryVehicle.DeleteAll();
                     vehicles.ForEach(x => InfrastructureBuilder.vehicleService.memoryRepositoryVehicle.Create(x));
-                    InfrastructureBuilder.vehicleService.memoryRepositoryVehicle.ReadAll();
+                    InfrastructureBuilder.vehicleService.lastVechicalId = vehicles.Max(x => x.Id);
+                    DataEntryAndPrint.ColorPrint("**** object restored from json:", ConsoleColor.Blue);
+                    DataEntryAndPrint.VehicleListDataPrint(vehicles);
                     break;
                 case "warehouse.json":
                     warehouses = warehouseJson.Read(filePath);
                     InfrastructureBuilder.warehouseService.memoryRepositoryWarehouse.DeleteAll();
                     warehouses.ForEach(x => InfrastructureBuilder.warehouseService.memoryRepositoryWarehouse.Create(x));
-                    InfrastructureBuilder.warehouseService.memoryRepositoryWarehouse.ReadAll();
+                    InfrastructureBuilder.warehouseService.lastWarehouseId = warehouses.Max(x => x.Id);
+                    DataEntryAndPrint.ColorPrint("**** object restored from json:", ConsoleColor.Blue);
+                    DataEntryAndPrint.WarehouseListDataPrint(warehouses);
                     break;
                 case "vehicle.xml":
-                     vehicleXml.Read(filePath);
+                    vehicles = vehicleXml.Read(filePath);
                     InfrastructureBuilder.vehicleService.memoryRepositoryVehicle.DeleteAll();
                     vehicles.ForEach(x => InfrastructureBuilder.vehicleService.memoryRepositoryVehicle.Create(x));
-                    InfrastructureBuilder.vehicleService.memoryRepositoryVehicle.ReadAll();
+                    InfrastructureBuilder.vehicleService.lastVechicalId = vehicles.Max(x => x.Id);
+                    DataEntryAndPrint.ColorPrint("**** object restored from xml:", ConsoleColor.Blue);
+                    DataEntryAndPrint.VehicleListDataPrint(vehicles);
                     break;
                 case "warehouse.xml":
-                    //warehouses = warehouseXml.Read(filePath);
+                    warehouses = warehouseXml.Read(filePath);
                     InfrastructureBuilder.warehouseService.memoryRepositoryWarehouse.DeleteAll();
                     warehouses.ForEach(x => InfrastructureBuilder.warehouseService.memoryRepositoryWarehouse.Create(x));
-                    InfrastructureBuilder.warehouseService.memoryRepositoryWarehouse.ReadAll();
+                    InfrastructureBuilder.warehouseService.lastWarehouseId = warehouses.Max(x => x.Id);
+                    DataEntryAndPrint.ColorPrint("**** object restored from xml:", ConsoleColor.Blue);
+                    DataEntryAndPrint.WarehouseListDataPrint(warehouses);
                     break;
                 default:
                     DataEntryAndPrint.ColorPrint("**** unknown second part of the command", ConsoleColor.Red);

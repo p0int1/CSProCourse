@@ -10,7 +10,7 @@ namespace Logistic.ConsoleClient.Services
     public class VehicleService
     {
         const double POUNDS_IN_KILOGRAM = 2.2046;
-        static int lastVechicalId = 0;
+        public int lastVechicalId = 0;
         Vehicle vehicle;
         List<Vehicle> listVehicles;
         public InMemeoryRepository<Vehicle> memoryRepositoryVehicle;
