@@ -13,7 +13,7 @@ namespace Logistic.ConsoleClient.Repositories
         {
             var reportPath = Path.Combine(reportDir,
                 entity.GetType().GetGenericArguments()[0].ToString().Split('.').Last() +
-                $"_{DateTime.Now.ToString("MM.dd.yyyy_HHmmss")}.xml");
+                $"_{DateTime.Now.ToString("dd.MM.yyyy_HHmmss")}.xml");
             using (FileStream fs = new FileStream(reportPath, FileMode.OpenOrCreate))
             {
                 xmlSerializer.Serialize(fs, entity);
