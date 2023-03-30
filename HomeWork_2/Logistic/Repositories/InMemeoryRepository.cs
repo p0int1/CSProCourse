@@ -33,7 +33,7 @@ namespace Logistic.ConsoleClient.Repositories
             var entityById = _entities.FirstOrDefault(x => x.Id == id);
             newEntity.Id = entityById.Id;
             _entities.Remove(entityById);
-            _entities.Add(newEntity);
+            _entities.Add(DeepCopy(newEntity));
         }
 
         public bool Delete(int id)
