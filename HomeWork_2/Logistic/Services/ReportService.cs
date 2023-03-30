@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 using Logistic.ConsoleClient.Enums;
 using Logistic.ConsoleClient.Repositories;
 
