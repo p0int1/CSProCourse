@@ -1,10 +1,15 @@
-﻿using Logistic.ConsoleClient.Enums;
-using System;
+﻿using System;
+using System.IO;
+using System.Linq;
+using Logistic.ConsoleClient.Enums;
+using Logistic.ConsoleClient.Models;
 
 namespace Logistic.ConsoleClient
 {
     public class CommandExecutor
     {
+        const double POUNDS_IN_KILOGRAM = 2.2046;
+
         private static bool CheckCommandParts(string[] commandParts, int parts)
         {
             if (commandParts.Length != parts)
@@ -24,10 +29,25 @@ namespace Logistic.ConsoleClient
             switch (commandParts[1])
             {
                 case "vehicle":
-                    InfrastructureBuilder.vehicleService.Create();
+                    //DataEntryAndPrint.VehicleDataEntry(out VehicleType type, out int maxCargo, out double maxVolume, out string number);
+                    DataEntryAndPrint.VehicleDataRandom(out VehicleType type, out int maxCargo, out double maxVolume, out string number);
+                    var vehicle = new Vehicle()
+                    {
+                        Type = type,
+                        MaxCargoWeightKg = maxCargo,
+                        MaxCargoWeightPnd = maxCargo * POUNDS_IN_KILOGRAM,
+                        MaxCargoVolume = maxVolume,
+                        Number = number
+                    };
+                    InfrastructureBuilder._vehicleService.Create(vehicle);
+                    DataEntryAndPrint.ColorPrint("**** add vehicle in MemoryRepository:", ConsoleColor.Blue);
+                    DataEntryAndPrint.VehicleDataPrint(vehicle);
                     break;
                 case "warehouse":
-                    InfrastructureBuilder.warehouseService.Create();
+                    var warehouse = new Warehouse();
+                    InfrastructureBuilder._warehouseService.Create(warehouse);
+                    DataEntryAndPrint.ColorPrint("**** add warehouse in MemoryRepository:", ConsoleColor.Blue);
+                    DataEntryAndPrint.WarehouseDataPrint(warehouse);
                     break;
                 default:
                     DataEntryAndPrint.ColorPrint("**** unknown second part of the command", ConsoleColor.Red);
@@ -42,10 +62,26 @@ namespace Logistic.ConsoleClient
             switch (commandParts[1])
             {
                 case "vehicle":
-                    InfrastructureBuilder.vehicleService.GetById(id);
+                    var vehicle = InfrastructureBuilder._vehicleService.GetById(id);
+                    if (vehicle != null)
+                    {
+                        DataEntryAndPrint.VehicleDataPrint(vehicle);
+                    }
+                    else
+                    {
+                        DataEntryAndPrint.ColorPrint("**** there is no vehicle with this Id", ConsoleColor.Red);
+                    }
                     break;
                 case "warehouse":
-                    InfrastructureBuilder.warehouseService.GetById(id);
+                    var warehouse = InfrastructureBuilder._warehouseService.GetById(id);
+                    if (warehouse != null)
+                    {
+                        DataEntryAndPrint.WarehouseDataPrint(warehouse);
+                    }
+                    else
+                    {
+                        DataEntryAndPrint.ColorPrint("**** there is no warehouse with this Id", ConsoleColor.Red);
+                    }
                     break;
                 default:
                     DataEntryAndPrint.ColorPrint("**** unknown second part of the command", ConsoleColor.Red);
@@ -59,28 +95,26 @@ namespace Logistic.ConsoleClient
             switch (commandParts[1])
             {
                 case "vehicle":
-                    InfrastructureBuilder.vehicleService.GetAll();
+                    var listVehicles = InfrastructureBuilder._vehicleService.GetAll();
+                    if (listVehicles.Count > 0)
+                    {
+                        DataEntryAndPrint.VehicleListDataPrint(listVehicles);
+                    }
+                    else
+                    {
+                        DataEntryAndPrint.ColorPrint("**** there is no any vehicles", ConsoleColor.Red);
+                    }
                     break;
                 case "warehouse":
-                    InfrastructureBuilder.warehouseService.GetAll();
-                    break;
-                default:
-                    DataEntryAndPrint.ColorPrint("**** unknown second part of the command", ConsoleColor.Red);
-                    break;
-            }
-        }
-
-        public static void Update(string[] commandParts)
-        {
-            if (!CheckCommandParts(commandParts, 3)) { return; }
-            int.TryParse(commandParts[2], out int id);
-            switch (commandParts[1])
-            {
-                case "vehicle":
-                    InfrastructureBuilder.vehicleService.UpdateById(id);
-                    break;
-                case "warehouse":
-                    InfrastructureBuilder.warehouseService.UpdateById(id);
+                    var listWarehouse = InfrastructureBuilder._warehouseService.GetAll();
+                    if (listWarehouse.Count > 0)
+                    {
+                        DataEntryAndPrint.WarehouseListDataPrint(listWarehouse);
+                    }
+                    else
+                    {
+                        DataEntryAndPrint.ColorPrint("**** there is no any warehouse", ConsoleColor.Red);
+                    }
                     break;
                 default:
                     DataEntryAndPrint.ColorPrint("**** unknown second part of the command", ConsoleColor.Red);
@@ -95,10 +129,26 @@ namespace Logistic.ConsoleClient
             switch (commandParts[1])
             {
                 case "vehicle":
-                    InfrastructureBuilder.vehicleService.DeleteById(id);
+                    var isVehicleDelete = InfrastructureBuilder._vehicleService.DeleteById(id);
+                    if (isVehicleDelete)
+                    {
+                        DataEntryAndPrint.ColorPrint("**** del vehicle from MemoryRepository!", ConsoleColor.Blue);
+                    }
+                    else
+                    {
+                        DataEntryAndPrint.ColorPrint("**** there is no vehicle with this Id", ConsoleColor.Red);
+                    }
                     break;
                 case "warehouse":
-                    InfrastructureBuilder.warehouseService.DeleteById(id);
+                    var isWarehouseDelete = InfrastructureBuilder._warehouseService.DeleteById(id);
+                    if (isWarehouseDelete)
+                    {
+                        DataEntryAndPrint.ColorPrint("**** del warehouse from MemoryRepository!", ConsoleColor.Blue);
+                    }
+                    else
+                    {
+                        DataEntryAndPrint.ColorPrint("**** there is no warehouse with this Id", ConsoleColor.Red);
+                    }
                     break;
                 default:
                     DataEntryAndPrint.ColorPrint("**** unknown second part of the command", ConsoleColor.Red);
@@ -112,10 +162,12 @@ namespace Logistic.ConsoleClient
             switch (commandParts[1])
             {
                 case "vehicle":
-                    InfrastructureBuilder.vehicleService.DeleteAll();
+                    InfrastructureBuilder._vehicleService.DeleteAll();
+                    DataEntryAndPrint.ColorPrint("**** del all vehicles from MemoryRepository!", ConsoleColor.Blue);
                     break;
                 case "warehouse":
-                    InfrastructureBuilder.warehouseService.DeleteAll();
+                    InfrastructureBuilder._warehouseService.DeleteAll();
+                    DataEntryAndPrint.ColorPrint("**** del all warehouse from MemoryRepository!", ConsoleColor.Blue);
                     break;
                 default:
                     DataEntryAndPrint.ColorPrint("**** unknown second part of the command", ConsoleColor.Red);
@@ -130,10 +182,77 @@ namespace Logistic.ConsoleClient
             switch (commandParts[1])
             {
                 case "vehicle":
-                    InfrastructureBuilder.vehicleService.LoadCargo(id);
+                    var vehicle = InfrastructureBuilder._vehicleService.GetById(id);
+                    if (vehicle != null)
+                    {
+                        //DataEntryAndPrint.CargoDataEntry(out int weightKilograms, out double volume, out string code, 
+                        //    out string recipientAddress, out string recipientPhoneNumber, out string senderAddress, out string senderPhoneNumber);
+                        DataEntryAndPrint.CargoDataRandom(out int weightKilograms, out double volume, out string code,
+                            out string recipientAddress, out string recipientPhoneNumber, out string senderAddress, out string senderPhoneNumber);
+                        int totalWeightKilograms = vehicle.Cargos.Sum(x => x.Weight);
+                        double totalVolume = vehicle.Cargos.Sum(x => x.Volume);
+                        if (totalWeightKilograms + weightKilograms < vehicle.MaxCargoWeightKg && totalVolume + volume < vehicle.MaxCargoVolume)
+                        {
+                            vehicle.Cargos.Add(new Cargo
+                            {
+                                Id = Guid.NewGuid(),
+                                Invoice = new Invoice
+                                {
+                                    Id = Guid.NewGuid(),
+                                    RecipientAddress = recipientAddress,
+                                    RecipientPhoneNumber = recipientPhoneNumber,
+                                    SenderAddress = senderAddress,
+                                    SenderPhoneNumber = senderPhoneNumber
+                                },
+                                Volume = volume,
+                                Weight = weightKilograms,
+                                Code = code
+                            });
+                            InfrastructureBuilder._vehicleService.LoadCargo(vehicle, id);
+                            DataEntryAndPrint.ColorPrint("**** update vehicle in MemoryRepository:", ConsoleColor.Blue);
+                            DataEntryAndPrint.VehicleDataPrint(vehicle);
+                        }
+                        else
+                        {
+                            DataEntryAndPrint.ColorPrint("**** free weightKg or volume is not enough!", ConsoleColor.Red);
+                        }
+                    }
+                    else
+                    {
+                        DataEntryAndPrint.ColorPrint("**** there is no vehicle with this Id", ConsoleColor.Red);
+                    }
                     break;
                 case "warehouse":
-                    InfrastructureBuilder.warehouseService.LoadCargo(id);
+                    var warehouse = InfrastructureBuilder._warehouseService.GetById(id);
+                    if (warehouse != null)
+                    {
+                        //DataEntryAndPrint.CargoDataEntry(out int weightKilograms, out double volume, out string code, 
+                        //    out string recipientAddress, out string recipientPhoneNumber, out string senderAddress, out string senderPhoneNumber);
+                        DataEntryAndPrint.CargoDataRandom(out int weightKilograms, out double volume, out string code,
+                            out string recipientAddress, out string recipientPhoneNumber, out string senderAddress, out string senderPhoneNumber);
+                        warehouse.Cargos.Add(new Cargo
+                        {
+                            Id = Guid.NewGuid(),
+                            Invoice = new Invoice
+                            {
+                                Id = Guid.NewGuid(),
+                                RecipientAddress = recipientAddress,
+                                RecipientPhoneNumber = recipientPhoneNumber,
+                                SenderAddress = senderAddress,
+                                SenderPhoneNumber = senderPhoneNumber
+                            },
+                            Volume = volume,
+                            Weight = weightKilograms,
+                            Code = code
+                        });
+                        InfrastructureBuilder._warehouseService.LoadCargo(warehouse, id);
+                        DataEntryAndPrint.ColorPrint("**** update warehouse in MemoryRepository:", ConsoleColor.Blue);
+                        DataEntryAndPrint.WarehouseDataPrint(warehouse);
+                    }
+                    else
+                    {
+                        DataEntryAndPrint.ColorPrint("**** there is no warehouse with this Id", ConsoleColor.Red);
+                    }
                     break;
                 default:
                     DataEntryAndPrint.ColorPrint("**** unknown second part of the command", ConsoleColor.Red);
@@ -148,10 +267,50 @@ namespace Logistic.ConsoleClient
             switch (commandParts[1])
             {
                 case "vehicle":
-                    InfrastructureBuilder.vehicleService.UnloadCargo(id);
+                    var vehicle = InfrastructureBuilder._vehicleService.GetById(id);
+                    if (vehicle != null)
+                    {
+                        Guid cargoGuid = DataEntryAndPrint.GetInputCargoGuid();
+                        var cargo = vehicle.Cargos.FirstOrDefault(x => x.Id == cargoGuid);
+                        if (cargo != null)
+                        {
+                            vehicle.Cargos.Remove(cargo);
+                            InfrastructureBuilder._vehicleService.UnloadCargo(vehicle, id);
+                            DataEntryAndPrint.ColorPrint("**** update vehicle in MemoryRepository:", ConsoleColor.Blue);
+                            DataEntryAndPrint.VehicleDataPrint(vehicle);
+                        }
+                        else
+                        {
+                            DataEntryAndPrint.ColorPrint("**** there is no cargo with this Id", ConsoleColor.Red);
+                        }
+                    }
+                    else
+                    {
+                        DataEntryAndPrint.ColorPrint("**** there is no vehicle with this Id", ConsoleColor.Red);
+                    }
                     break;
                 case "warehouse":
-                    InfrastructureBuilder.warehouseService.UnloadCargo(id);
+                    var warehouse = InfrastructureBuilder._warehouseService.GetById(id);
+                    if (warehouse != null)
+                    {
+                        Guid cargoGuid = DataEntryAndPrint.GetInputCargoGuid();
+                        var cargo = warehouse.Cargos.FirstOrDefault(x => x.Id == cargoGuid);
+                        if (cargo != null)
+                        {
+                            warehouse.Cargos.Remove(cargo);
+                            InfrastructureBuilder._warehouseService.UnloadCargo(warehouse, id);
+                            DataEntryAndPrint.ColorPrint("**** update warehouse in MemoryRepository:", ConsoleColor.Blue);
+                            DataEntryAndPrint.WarehouseDataPrint(warehouse);
+                        }
+                        else
+                        {
+                            DataEntryAndPrint.ColorPrint("**** there is no cargo with this Id", ConsoleColor.Red);
+                        }
+                    }
+                    else
+                    {
+                        DataEntryAndPrint.ColorPrint("**** there is no warehouse with this Id", ConsoleColor.Red);
+                    }
                     break;
                 default:
                     DataEntryAndPrint.ColorPrint("**** unknown second part of the command", ConsoleColor.Red);
@@ -166,10 +325,32 @@ namespace Logistic.ConsoleClient
             switch (commandParts[1])
             {
                 case "vehicle":
-                    InfrastructureBuilder.vehicleService.UnloadAllCargos(id);
+                    var vehicle = InfrastructureBuilder._vehicleService.GetById(id);
+                    if (vehicle != null)
+                    {
+                        vehicle.Cargos.Clear();
+                        InfrastructureBuilder._vehicleService.UnloadAllCargos(vehicle, id);
+                        DataEntryAndPrint.ColorPrint("**** update vehicle in MemoryRepository:", ConsoleColor.Blue);
+                        DataEntryAndPrint.VehicleDataPrint(vehicle);
+                    }
+                    else
+                    {
+                        DataEntryAndPrint.ColorPrint("**** there is no vehicle with this Id", ConsoleColor.Red);
+                    }
                     break;
                 case "warehouse":
-                    InfrastructureBuilder.warehouseService.UnloadAllCargos(id);
+                    var warehouse = InfrastructureBuilder._warehouseService.GetById(id);
+                    if (warehouse != null)
+                    {
+                        warehouse.Cargos.Clear();
+                        InfrastructureBuilder._warehouseService.UnloadAllCargos(warehouse, id);
+                        DataEntryAndPrint.ColorPrint("**** update warehouse in MemoryRepository:", ConsoleColor.Blue);
+                        DataEntryAndPrint.WarehouseDataPrint(warehouse);
+                    }
+                    else
+                    {
+                        DataEntryAndPrint.ColorPrint("**** there is no warehouse with this Id", ConsoleColor.Red);
+                    }
                     break;
                 default:
                     DataEntryAndPrint.ColorPrint("**** unknown second part of the command", ConsoleColor.Red);
@@ -180,13 +361,19 @@ namespace Logistic.ConsoleClient
         public static void CreateReport(string[] commandParts)
         {
             if (!CheckCommandParts(commandParts, 2)) { return; }
+            var listVehicles = InfrastructureBuilder._vehicleService.GetAll();
+            var listWarehouse = InfrastructureBuilder._warehouseService.GetAll();
             switch (commandParts[1])
             {
                 case "json":
-                    InfrastructureBuilder.reportService.CreateReport(ReportType.json);
+                    InfrastructureBuilder._vehicleReportService.CreateReport(listVehicles, ReportType.json);
+                    InfrastructureBuilder._warehouseReportService.CreateReport(listWarehouse, ReportType.json);
+                    DataEntryAndPrint.ColorPrint("**** json report files created", ConsoleColor.Blue);
                     break;
                 case "xml":
-                    InfrastructureBuilder.reportService.CreateReport(ReportType.xml);
+                    InfrastructureBuilder._vehicleReportService.CreateReport(listVehicles, ReportType.xml);
+                    InfrastructureBuilder._warehouseReportService.CreateReport(listWarehouse, ReportType.xml);
+                    DataEntryAndPrint.ColorPrint("**** xml report files created", ConsoleColor.Blue);
                     break;
                 default:
                     DataEntryAndPrint.ColorPrint("**** unknown second part of the command", ConsoleColor.Red);
@@ -197,7 +384,32 @@ namespace Logistic.ConsoleClient
         public static void LoadReport(string[] commandParts)
         {
             if (!CheckCommandParts(commandParts, 2)) { return; }
-            InfrastructureBuilder.reportService.LoadReport(commandParts[1]);
+            if (!File.Exists(commandParts[1])) 
+            {
+                DataEntryAndPrint.ColorPrint($"**** file {commandParts[1]} not exist!", ConsoleColor.Red);
+                return; 
+            }
+            var entityType = commandParts[1].Contains("vehicle") ? "vehicle" : "warehouse";
+            switch (entityType)
+            {
+                case "vehicle":
+                    var vehicleList = InfrastructureBuilder._vehicleReportService.LoadReport(commandParts[1]);
+                    InfrastructureBuilder._vehicleService.memoryRepositoryVehicle.DeleteAll();
+                    vehicleList.ForEach(x => InfrastructureBuilder._vehicleService.memoryRepositoryVehicle.Create(x));
+                    DataEntryAndPrint.ColorPrint("**** Vehicle object restored:", ConsoleColor.Blue);
+                    DataEntryAndPrint.VehicleListDataPrint(vehicleList);
+                    break;
+                case "warehouse":
+                    var warehouseList = InfrastructureBuilder._warehouseReportService.LoadReport(commandParts[1]);
+                    InfrastructureBuilder._warehouseService.memoryRepositoryWarehouse.DeleteAll();
+                    warehouseList.ForEach(x => InfrastructureBuilder._warehouseService.memoryRepositoryWarehouse.Create(x));
+                    DataEntryAndPrint.ColorPrint("**** Warehouse object restored:", ConsoleColor.Blue);
+                    DataEntryAndPrint.WarehouseListDataPrint(warehouseList);
+                    break;
+                default:
+                    DataEntryAndPrint.ColorPrint("**** unknown report file format", ConsoleColor.Red);
+                    break;
+            }
         }
     }
 }

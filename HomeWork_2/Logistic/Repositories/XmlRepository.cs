@@ -1,30 +1,26 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Xml.Serialization;
+using System.Collections.Generic;
 
 namespace Logistic.ConsoleClient.Repositories
 {
-    public class XmlRepository<T> where T : class
+    public class XmlRepository<TEntity> : IReportRepository<TEntity> where TEntity : class
     {
-        XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
+        XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<TEntity>));
 
-        public void Create(T entity, string reportDir)
+        public void Create(List<TEntity> entity, string filePath)
         {
-            var reportPath = Path.Combine(reportDir,
-                entity.GetType().GetGenericArguments()[0].ToString().Split('.').Last() +
-                $"_{DateTime.Now.ToString("dd.MM.yyyy_HHmmss")}.xml");
-            using (FileStream fs = new FileStream(reportPath, FileMode.OpenOrCreate))
+            using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate))
             {
                 xmlSerializer.Serialize(fs, entity);
             }
         }
 
-        public T Read(string filePath)
+        public List<TEntity> Read(string filePath)
         {
             using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate))
             {
-                return xmlSerializer.Deserialize(fs) as T;
+                return xmlSerializer.Deserialize(fs) as List<TEntity>;
             }
         }
     }

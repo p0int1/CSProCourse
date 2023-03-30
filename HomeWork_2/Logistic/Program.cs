@@ -26,9 +26,6 @@ namespace Logistic.ConsoleClient
                     case "get-all":
                         CommandExecutor.GetAll(commandParts);
                         break;
-                    case "update":
-                        CommandExecutor.Update(commandParts);
-                        break;
                     case "delete":
                         CommandExecutor.Delete(commandParts);
                         break;

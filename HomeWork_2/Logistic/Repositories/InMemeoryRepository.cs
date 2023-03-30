@@ -1,44 +1,52 @@
-﻿using AutoMapper;
-using Logistic.ConsoleClient.Models;
+﻿using System.Linq;
 using System.Collections.Generic;
-using System.Linq;
+using Logistic.ConsoleClient.Models;
+using AutoMapper;
 
 namespace Logistic.ConsoleClient.Repositories
 {
     public class InMemeoryRepository<TEntity> where TEntity : IEntity, new()
     {
-        private List<TEntity> Entity { get; set; } = new List<TEntity>();
-        private TEntity entityById;
+        private int lastlId = 0;
+        private readonly List<TEntity> _entities = new List<TEntity>();
+        private readonly MapperConfiguration config = new MapperConfiguration(cfg => cfg.CreateMap<TEntity, TEntity>());
 
-        public bool CheckById(int id) 
+        private T DeepCopy<T>(T entity) => new Mapper(config).Map<T>(entity);
+
+        public void Create(TEntity entity)
         {
-            entityById = Entity.FirstOrDefault(x => x.Id == id);
-            return (entityById == null) ? false : true; 
+            entity.Id = ++lastlId;
+            _entities.Add(DeepCopy(entity));
         }
 
-        public void Create(TEntity entity) => Entity.Add(entity);
-
-        public TEntity Read() => DeepCopy(entityById);
-
-        public List<TEntity> ReadAll() => Entity.Select(x => DeepCopy(x)).ToList();
-
-        public void Update(TEntity newEntity)
+        public TEntity Read(int id)
         {
-            Entity.Remove(entityById);
-            Entity.Add(newEntity);
+            var entityById = _entities.FirstOrDefault(x => x.Id == id);
+            if (entityById == null) return entityById;
+            return DeepCopy(entityById);
         }
 
-        public void Delete() => Entity.Remove(entityById);
+        public List<TEntity> ReadAll() => DeepCopy(_entities);
 
-        public void DeleteAll() => Entity.Clear();
-
-        private T DeepCopy<T>(T entity) where T : new()
+        public void Update(TEntity newEntity, int id)
         {
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<T, T>());
-            var mapper = new Mapper(config);
-            var clon = new T();
-            mapper.Map(entity, clon);
-            return clon;
+            var entityById = _entities.FirstOrDefault(x => x.Id == id);
+            newEntity.Id = entityById.Id;
+            _entities.Remove(entityById);
+            _entities.Add(newEntity);
+        }
+
+        public bool Delete(int id)
+        {
+            var entityById = _entities.FirstOrDefault(x => x.Id == id);
+            _entities.Remove(entityById);
+            return true;
+        }
+
+        public void DeleteAll()
+        {
+            lastlId = 0;
+            _entities.Clear();
         }
     }
 }

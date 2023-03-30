@@ -1,8 +1,8 @@
-﻿using Logistic.ConsoleClient.Enums;
-using Logistic.ConsoleClient.Models;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Text;
+using System.Collections.Generic;
+using Logistic.ConsoleClient.Enums;
+using Logistic.ConsoleClient.Models;
 
 namespace Logistic.ConsoleClient
 {
@@ -121,8 +121,6 @@ namespace Logistic.ConsoleClient
             ColorPrint("get warehouse 1 - get a warehouse entity by id", ConsoleColor.DarkCyan);
             ColorPrint("get-all vehicle - get all transport entitys", ConsoleColor.DarkCyan);
             ColorPrint("get-all warehouse - get all warehouse entitys", ConsoleColor.DarkCyan);
-            ColorPrint("update vehicle 3 - update transport entity by id", ConsoleColor.DarkCyan);
-            ColorPrint("update warehouse 3 - update warehouse entity by id", ConsoleColor.DarkCyan);
             ColorPrint("delete vehicle 5 - delete transport entity by id", ConsoleColor.DarkCyan);
             ColorPrint("delete warehouse 5 - delete warehouse entity by id", ConsoleColor.DarkCyan);
             ColorPrint("delete-all vehicle - delete all transport entitys", ConsoleColor.DarkCyan);

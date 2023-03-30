@@ -3,99 +3,52 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Logistic.ConsoleClient.Enums;
-using Logistic.ConsoleClient.Models;
 using Logistic.ConsoleClient.Repositories;
 
 namespace Logistic.ConsoleClient.Services
 {
-    public class ReportService
+    public class ReportService<TEntity> where TEntity : class
     {
-        List<Vehicle> vehicles;
-        List<Warehouse> warehouses;
-        JsonRepository<List<Vehicle>> vehicleJson;
-        JsonRepository<List<Warehouse>> warehouseJson;
-        XmlRepository<List<Vehicle>> vehicleXml;
-        XmlRepository<List<Warehouse>> warehouseXml;
+        private readonly IReportRepository<TEntity> jsonRepository; 
+        private readonly IReportRepository<TEntity> xmlRepository;
         string reportDir;
 
-        public ReportService()
+        public ReportService(IReportRepository<TEntity> json, IReportRepository<TEntity> xml)
         {
-            vehicleJson = new JsonRepository<List<Vehicle>>();
-            warehouseJson = new JsonRepository<List<Warehouse>>();
-            vehicleXml = new XmlRepository<List<Vehicle>>();
-            warehouseXml = new XmlRepository<List<Warehouse>>();
+            jsonRepository = json;
+            xmlRepository = xml;
             string appDir = Directory.GetCurrentDirectory();
             reportDir = Path.Combine(appDir, "reports");
             Directory.CreateDirectory(reportDir);
         }
 
-        public void CreateReport(ReportType reportType)
+        public void CreateReport(List<TEntity> listEntity, ReportType reportType)
         {
-            vehicles = InfrastructureBuilder.vehicleService.memoryRepositoryVehicle.ReadAll();
-            warehouses = InfrastructureBuilder.warehouseService.memoryRepositoryWarehouse.ReadAll();
-            switch (reportType)
+            string reportPath = Path.Combine(reportDir,
+                typeof(TEntity).ToString().Split('.').Last() +
+                $"_{DateTime.Now.ToString("dd.MM.yyyy_HHmmss")}");
+            if (reportType == ReportType.json)
             {
-                case ReportType.json:
-                    vehicleJson.Create(vehicles, reportDir);
-                    warehouseJson.Create(warehouses, reportDir);
-                    DataEntryAndPrint.ColorPrint("**** json report files created", ConsoleColor.Blue);
-                    break;
-                case ReportType.xml:
-                    vehicleXml.Create(vehicles, reportDir);
-                    warehouseXml.Create(warehouses, reportDir);
-                    DataEntryAndPrint.ColorPrint("**** xml report files created", ConsoleColor.Blue);
-                    break;
+                jsonRepository.Create(listEntity, reportPath + ".json");
+            }
+            else if (reportType == ReportType.xml)
+            {
+                xmlRepository.Create(listEntity, reportPath + ".xml");
             }
         }
 
-        public void LoadReport(string filePath)
+        public List<TEntity> LoadReport(string filePath)
         {
-            if (!File.Exists(filePath)) 
+            var actionType = filePath.Split('.').Last();
+            if (actionType == "json") 
             {
-                DataEntryAndPrint.ColorPrint($"**** file {filePath} not exist!", ConsoleColor.Red);
-                return; 
+                return jsonRepository.Read(filePath);
+            } 
+            else if (actionType == "xml") 
+            { 
+                return xmlRepository.Read(filePath); 
             }
-            var reportType = filePath.Split('.').Last();
-            var entityType = filePath.Contains("vehicle") ? "vehicle" : "warehouse";
-            var actionType = $"{entityType}.{reportType}";
-            switch (actionType)
-            {
-                case "vehicle.json":
-                    vehicles = vehicleJson.Read(filePath);
-                    InfrastructureBuilder.vehicleService.memoryRepositoryVehicle.DeleteAll();
-                    vehicles.ForEach(x => InfrastructureBuilder.vehicleService.memoryRepositoryVehicle.Create(x));
-                    InfrastructureBuilder.vehicleService.lastVechicalId = vehicles.Max(x => x.Id);
-                    DataEntryAndPrint.ColorPrint("**** object restored from json:", ConsoleColor.Blue);
-                    DataEntryAndPrint.VehicleListDataPrint(vehicles);
-                    break;
-                case "warehouse.json":
-                    warehouses = warehouseJson.Read(filePath);
-                    InfrastructureBuilder.warehouseService.memoryRepositoryWarehouse.DeleteAll();
-                    warehouses.ForEach(x => InfrastructureBuilder.warehouseService.memoryRepositoryWarehouse.Create(x));
-                    InfrastructureBuilder.warehouseService.lastWarehouseId = warehouses.Max(x => x.Id);
-                    DataEntryAndPrint.ColorPrint("**** object restored from json:", ConsoleColor.Blue);
-                    DataEntryAndPrint.WarehouseListDataPrint(warehouses);
-                    break;
-                case "vehicle.xml":
-                    vehicles = vehicleXml.Read(filePath);
-                    InfrastructureBuilder.vehicleService.memoryRepositoryVehicle.DeleteAll();
-                    vehicles.ForEach(x => InfrastructureBuilder.vehicleService.memoryRepositoryVehicle.Create(x));
-                    InfrastructureBuilder.vehicleService.lastVechicalId = vehicles.Max(x => x.Id);
-                    DataEntryAndPrint.ColorPrint("**** object restored from xml:", ConsoleColor.Blue);
-                    DataEntryAndPrint.VehicleListDataPrint(vehicles);
-                    break;
-                case "warehouse.xml":
-                    warehouses = warehouseXml.Read(filePath);
-                    InfrastructureBuilder.warehouseService.memoryRepositoryWarehouse.DeleteAll();
-                    warehouses.ForEach(x => InfrastructureBuilder.warehouseService.memoryRepositoryWarehouse.Create(x));
-                    InfrastructureBuilder.warehouseService.lastWarehouseId = warehouses.Max(x => x.Id);
-                    DataEntryAndPrint.ColorPrint("**** object restored from xml:", ConsoleColor.Blue);
-                    DataEntryAndPrint.WarehouseListDataPrint(warehouses);
-                    break;
-                default:
-                    DataEntryAndPrint.ColorPrint("**** unknown second part of the command", ConsoleColor.Red);
-                    break;
-            }
+            return null;
         }
     }
 }

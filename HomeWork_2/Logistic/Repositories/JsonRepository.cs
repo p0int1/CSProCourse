@@ -1,30 +1,26 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text.Json;
+using System.Collections.Generic;
 
 namespace Logistic.ConsoleClient.Repositories
 {
-    public class JsonRepository<T>
+    public class JsonRepository<TEntity> : IReportRepository<TEntity> where TEntity : class
     {
         JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = true };
 
-        public void Create(T entity, string reportDir)
+        public void Create(List<TEntity> entity, string filePath)
         {
-            var reportPath = Path.Combine(reportDir,
-                entity.GetType().GetGenericArguments()[0].ToString().Split('.').Last() +
-                $"_{DateTime.Now.ToString("dd.MM.yyyy_HHmmss")}.json");
-            using (FileStream fs = new FileStream(reportPath, FileMode.OpenOrCreate))
+            using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate))
             {
                 JsonSerializer.Serialize(fs, entity, options);
             }
         }
 
-        public T Read(string filePath)
+        public List<TEntity> Read(string filePath)
         {
             using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate))
             {
-                return JsonSerializer.Deserialize<T>(fs);
+                return JsonSerializer.Deserialize<List<TEntity>>(fs);
             }
         }
     }
