@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Logistic.ConsoleClient.Models;
 using Logistic.ConsoleClient.Repositories;
 
@@ -23,7 +24,13 @@ namespace Logistic.ConsoleClient.Services
 
         public void DeleteAll() => memoryRepositoryVehicle.DeleteAll();
 
-        public void LoadCargo(Vehicle vehicle, int vehicleId) => memoryRepositoryVehicle.Update(vehicle, vehicleId);
+        public bool LoadCargo(Vehicle vehicle, int vehicleId)
+        {
+            var result = (vehicle.Cargos.Sum(x => x.Weight) < vehicle.MaxCargoWeightKg 
+                && vehicle.Cargos.Sum(x => x.Volume) < vehicle.MaxCargoVolume) ? true : false;
+            if (result) { memoryRepositoryVehicle.Update(vehicle, vehicleId); }
+            return result; 
+        }
 
         public void UnloadCargo(Vehicle vehicle, int vehicleId) => memoryRepositoryVehicle.Update(vehicle, vehicleId);
 

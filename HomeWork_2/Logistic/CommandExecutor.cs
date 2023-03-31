@@ -189,26 +189,24 @@ namespace Logistic.ConsoleClient
                         //    out string recipientAddress, out string recipientPhoneNumber, out string senderAddress, out string senderPhoneNumber);
                         DataEntryAndPrint.CargoDataRandom(out int weightKilograms, out double volume, out string code,
                             out string recipientAddress, out string recipientPhoneNumber, out string senderAddress, out string senderPhoneNumber);
-                        int totalWeightKilograms = vehicle.Cargos.Sum(x => x.Weight);
-                        double totalVolume = vehicle.Cargos.Sum(x => x.Volume);
-                        if (totalWeightKilograms + weightKilograms < vehicle.MaxCargoWeightKg && totalVolume + volume < vehicle.MaxCargoVolume)
+                        vehicle.Cargos.Add(new Cargo
                         {
-                            vehicle.Cargos.Add(new Cargo
+                            Id = Guid.NewGuid(),
+                            Invoice = new Invoice
                             {
                                 Id = Guid.NewGuid(),
-                                Invoice = new Invoice
-                                {
-                                    Id = Guid.NewGuid(),
-                                    RecipientAddress = recipientAddress,
-                                    RecipientPhoneNumber = recipientPhoneNumber,
-                                    SenderAddress = senderAddress,
-                                    SenderPhoneNumber = senderPhoneNumber
-                                },
-                                Volume = volume,
-                                Weight = weightKilograms,
-                                Code = code
+                                RecipientAddress = recipientAddress,
+                                RecipientPhoneNumber = recipientPhoneNumber,
+                                SenderAddress = senderAddress,
+                                SenderPhoneNumber = senderPhoneNumber
+                            },
+                            Volume = volume,
+                            Weight = weightKilograms,
+                            Code = code
                             });
-                            InfrastructureBuilder._vehicleService.LoadCargo(vehicle, id);
+                            var isLoaded = InfrastructureBuilder._vehicleService.LoadCargo(vehicle, id);
+                        if (isLoaded)
+                        {
                             DataEntryAndPrint.ColorPrint("**** update vehicle in MemoryRepository:", ConsoleColor.Blue);
                             DataEntryAndPrint.VehicleDataPrint(vehicle);
                         }
