@@ -1,0 +1,29 @@
+[
+  {
+    "Id": 1,
+    "Type": 0,
+    "Number": "LW7437XL",
+    "MaxCargoWeightKg": 776,
+    "MaxCargoWeightPnd": 1710.7696,
+    "MaxCargoVolume": 4,
+    "Cargos": []
+  },
+  {
+    "Id": 2,
+    "Type": 0,
+    "Number": "VL7754NS",
+    "MaxCargoWeightKg": 196,
+    "MaxCargoWeightPnd": 432.1016,
+    "MaxCargoVolume": 7,
+    "Cargos": []
+  },
+  {
+    "Id": 3,
+    "Type": 0,
+    "Number": "RX6661HS",
+    "MaxCargoWeightKg": 7287,
+    "MaxCargoWeightPnd": 16064.9202,
+    "MaxCargoVolume": 4,
+    "Cargos": []
+  }
+]

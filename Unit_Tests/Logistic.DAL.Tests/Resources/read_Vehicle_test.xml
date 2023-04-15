@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfVehicle xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Vehicle>
+    <Id>1</Id>
+    <Type>Car</Type>
+    <Number>LW7437XL</Number>
+    <MaxCargoWeightKg>776</MaxCargoWeightKg>
+    <MaxCargoWeightPnd>1710.7696</MaxCargoWeightPnd>
+    <MaxCargoVolume>4</MaxCargoVolume>
+    <Cargos />
+  </Vehicle>
+  <Vehicle>
+    <Id>2</Id>
+    <Type>Car</Type>
+    <Number>VL7754NS</Number>
+    <MaxCargoWeightKg>196</MaxCargoWeightKg>
+    <MaxCargoWeightPnd>432.1016</MaxCargoWeightPnd>
+    <MaxCargoVolume>7</MaxCargoVolume>
+    <Cargos />
+  </Vehicle>
+  <Vehicle>
+    <Id>3</Id>
+    <Type>Car</Type>
+    <Number>RX6661HS</Number>
+    <MaxCargoWeightKg>7287</MaxCargoWeightKg>
+    <MaxCargoWeightPnd>16064.9202</MaxCargoWeightPnd>
+    <MaxCargoVolume>4</MaxCargoVolume>
+    <Cargos />
+  </Vehicle>
+</ArrayOfVehicle>
