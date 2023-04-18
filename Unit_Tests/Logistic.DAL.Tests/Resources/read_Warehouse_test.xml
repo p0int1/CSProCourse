@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfWarehouse xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Warehouse>
+    <Id>1</Id>
+    <Cargos />
+  </Warehouse>
+  <Warehouse>
+    <Id>2</Id>
+    <Cargos />
+  </Warehouse>
+  <Warehouse>
+    <Id>3</Id>
+    <Cargos />
+  </Warehouse>
+</ArrayOfWarehouse>
