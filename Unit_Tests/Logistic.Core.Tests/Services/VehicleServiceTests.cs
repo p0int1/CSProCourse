@@ -2,8 +2,8 @@
 using Logistic.ConsoleClient.Services;
 using Logistic.Models;
 using NSubstitute;
-using AutoFixture;
 using Xunit;
+using AutoFixture.Xunit2;
 
 namespace Logistic.Core.Tests.Services
 {
@@ -11,41 +11,35 @@ namespace Logistic.Core.Tests.Services
     {
         private readonly VehicleService _vehicleService;
         private readonly IRepository<Vehicle> _vehicleRepository;
-        private readonly Vehicle _vehicle;
 
         public VehicleServiceTests()
         {
-            //Arrange
             _vehicleRepository = Substitute.For<IRepository<Vehicle>>();
             _vehicleService = new VehicleService(_vehicleRepository);
-            var fixture = new Fixture();
-            _vehicle = fixture.Create<Vehicle>();
-            _vehicle.MaxCargoVolume = 100;
-            _vehicle.MaxCargoWeightKg = 100;
         }
 
-        [Fact]
-        public void Create_WhenExecuted_ExpectedCallMethod()
+        [Theory, AutoData]
+        public void Create_WhenExecuted_ShouldCallCreateMethod(Vehicle vehicle)
         {
             //Act
-            _vehicleService.Create(_vehicle);
+            _vehicleService.Create(vehicle);
 
             //Assert
-            _vehicleRepository.Received(1).Create(Arg.Any<Vehicle>());
+            _vehicleRepository.Received(1).Create(vehicle);
         }
 
-        [Fact]
-        public void GetById_WhenExecuted_ExpectedCallMethod()
+        [Theory, AutoData]
+        public void GetById_WhenExecuted_ShouldCallReadMethod(int id)
         {
             //Act
-            _vehicleService.GetById(13);
+            _vehicleService.GetById(id);
 
             //Assert
-            _vehicleRepository.Received(1).Read(Arg.Any<int>());
+            _vehicleRepository.Received(1).Read(id);
         }
 
         [Fact]
-        public void GetAll_WhenExecuted_ExpectedCallMethod()
+        public void GetAll_WhenExecuted_ShouldCallReadAllMethod()
         {
             //Act
             _vehicleService.GetAll();
@@ -54,18 +48,18 @@ namespace Logistic.Core.Tests.Services
             _vehicleRepository.Received(1).ReadAll();
         }
 
-        [Fact]
-        public void DeleteById_WhenExecuted_ExpectedCallMethod()
+        [Theory, AutoData]
+        public void DeleteById_WhenExecuted_ShouldCallDeleteMethod(int id)
         {
             //Act
-            _vehicleService.DeleteById(1);
+            _vehicleService.DeleteById(id);
 
             //Assert
-            _vehicleRepository.Received(1).Delete(Arg.Any<int>());
+            _vehicleRepository.Received(1).Delete(id);
         }
 
         [Fact]
-        public void DeleteAll_WhenExecuted_ExpectedCallMethod()
+        public void DeleteAll_WhenExecuted_ShouldCallDeleteAllMethod()
         {
             //Act
             _vehicleService.DeleteAll();
@@ -74,56 +68,60 @@ namespace Logistic.Core.Tests.Services
             _vehicleRepository.Received(1).DeleteAll();
         }
 
-        [Fact]
-        public void LoadCargo_WhenCargoMeetLimits_ExpectedCallMethodAndTrue()
+        [Theory, AutoData]
+        public void LoadCargo_WhenCargoMeetLimits_ShouldCallUpdateMethodAndReturnTrue(Vehicle vehicle, int id)
         {
             //Arrange
-            _vehicle.Cargos.Clear();
-            _vehicle.Cargos.Add(new Cargo { Volume = 30, Weight = 30 });
-            _vehicle.Cargos.Add(new Cargo { Volume = 30, Weight = 30 });
+            vehicle.MaxCargoVolume = 100;
+            vehicle.MaxCargoWeightKg = 100;
+            vehicle.Cargos.Clear();
+            vehicle.Cargos.Add(new Cargo { Volume = 30, Weight = 30 });
+            vehicle.Cargos.Add(new Cargo { Volume = 30, Weight = 30 });
 
             //Act
-            var result = _vehicleService.LoadCargo(_vehicle, 1);
+            var result = _vehicleService.LoadCargo(vehicle, id);
 
             //Assert
-            _vehicleRepository.Received(1).Update(Arg.Any<Vehicle>(), Arg.Any<int>());
+            _vehicleRepository.Received(1).Update(vehicle, id);
             Assert.True(result);
         }
 
-        [Fact]
-        public void LoadCargo_WhenCargoNotMeetLimits_ExpectedCallMethodAndFalse()
+        [Theory, AutoData]
+        public void LoadCargo_WhenCargoNotMeetLimits_ShouldNotCallUpdateMethodAndReturnFalse(Vehicle vehicle, int id)
         {
             //Arrange
-            _vehicle.Cargos.Clear();
-            _vehicle.Cargos.Add(new Cargo { Volume = 80, Weight = 80 });
-            _vehicle.Cargos.Add(new Cargo { Volume = 30, Weight = 30 });
+            vehicle.MaxCargoVolume = 100;
+            vehicle.MaxCargoWeightKg = 100;
+            vehicle.Cargos.Clear();
+            vehicle.Cargos.Add(new Cargo { Volume = 80, Weight = 80 });
+            vehicle.Cargos.Add(new Cargo { Volume = 30, Weight = 30 });
 
             //Act
-            var result = _vehicleService.LoadCargo(_vehicle, 1);
+            var result = _vehicleService.LoadCargo(vehicle, id);
 
             //Assert
-            _vehicleRepository.Received(0).Update(Arg.Any<Vehicle>(), Arg.Any<int>());
+            _vehicleRepository.Received(0).Update(vehicle, id);
             Assert.False(result);
         }
 
-        [Fact]
-        public void UnLoadCargo_WhenExecuted_ExpectedCallMethod()
+        [Theory, AutoData]
+        public void UnLoadCargo_WhenExecuted_ShouldCallUpdateMethod(Vehicle vehicle, int id)
         {
             //Act
-            _vehicleService.UnloadCargo(_vehicle, 5);
+            _vehicleService.UnloadCargo(vehicle, id);
 
             //Assert
-            _vehicleRepository.Received(1).Update(Arg.Any<Vehicle>(), Arg.Any<int>());
+            _vehicleRepository.Received(1).Update(vehicle, id);
         }
 
-        [Fact]
-        public void UnLoadAllCargos_WhenExecuted_ExpectedCallMethod()
+        [Theory, AutoData]
+        public void UnLoadAllCargos_WhenExecuted_ShouldCallUpdateMethod(Vehicle vehicle, int id)
         {
             //Act
-            _vehicleService.UnloadAllCargos(_vehicle, 9);
+            _vehicleService.UnloadAllCargos(vehicle, id);
 
             //Assert
-            _vehicleRepository.Received(1).Update(Arg.Any<Vehicle>(), Arg.Any<int>());
+            _vehicleRepository.Received(1).Update(vehicle, id);
         }
     }
 }

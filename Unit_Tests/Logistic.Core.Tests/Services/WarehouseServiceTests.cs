@@ -2,8 +2,8 @@
 using Logistic.ConsoleClient.Services;
 using Logistic.Models;
 using Moq;
-using AutoFixture;
 using Xunit;
+using AutoFixture.Xunit2;
 
 namespace Logistic.Core.Tests.Services
 {
@@ -11,39 +11,35 @@ namespace Logistic.Core.Tests.Services
     {
         private readonly WarehouseService _warehouseService;
         private readonly Mock<IRepository<Warehouse>> _mock;
-        private readonly Warehouse _warehouse;
 
         public WarehouseServiceTest()
         {
-            //Arrange
             _mock = new Mock<IRepository<Warehouse>>();
             _warehouseService = new WarehouseService(_mock.Object);
-            var fixture = new Fixture();
-            _warehouse = fixture.Create<Warehouse>();
         }
 
-        [Fact]
-        public void Create_WhenExecuted_ExpectedCallMethod()
+        [Theory, AutoData]
+        public void Create_WhenExecuted_ShouldCallCreateMethod(Warehouse warehouse)
         {
             //Act
-            _warehouseService.Create(_warehouse);
+            _warehouseService.Create(warehouse);
 
             //Assert
-            _mock.Verify(wr => wr.Create(It.IsAny<Warehouse>()), Times.Once);
+            _mock.Verify(wr => wr.Create(warehouse), Times.Once);
         }
 
-        [Fact]
-        public void GetById_WhenExecuted_ExpectedCallMethod()
+        [Theory, AutoData]
+        public void GetById_WhenExecuted_ShouldCallReadMethod(int id)
         {
             //Act
-            _warehouseService.GetById(13);
+            _warehouseService.GetById(id);
 
             //Assert
-            _mock.Verify(wr => wr.Read(It.IsAny<int>()), Times.Once);
+            _mock.Verify(wr => wr.Read(id), Times.Once);
         }
 
         [Fact]
-        public void GetAll_WhenExecuted_ExpectedCallMethod()
+        public void GetAll_WhenExecuted_ShouldCallReadAllMethod()
         {
             //Act
             _warehouseService.GetAll();
@@ -52,18 +48,18 @@ namespace Logistic.Core.Tests.Services
             _mock.Verify(wr => wr.ReadAll(), Times.Once);
         }
 
-        [Fact]
-        public void DeleteById_WhenExecuted_ExpectedCallMethod()
+        [Theory, AutoData]
+        public void DeleteById_WhenExecuted_ShouldCallDeleteMethod(int id)
         {
             //Act
-            _warehouseService.DeleteById(1);
+            _warehouseService.DeleteById(id);
 
             //Assert
-            _mock.Verify(wr => wr.Delete(It.IsAny<int>()), Times.Once);
+            _mock.Verify(wr => wr.Delete(id), Times.Once);
         }
 
         [Fact]
-        public void DeleteAll_WhenExecuted_ExpectedCallMethod()
+        public void DeleteAll_WhenExecuted_ShouldCallDeleteAllMethod()
         {
             //Act
             _warehouseService.DeleteAll();
@@ -72,34 +68,34 @@ namespace Logistic.Core.Tests.Services
             _mock.Verify(wr => wr.DeleteAll(), Times.Once);
         }
 
-        [Fact]
-        public void LoadCargo_WhenExecuted_ExpectedCallMethod()
+        [Theory, AutoData]
+        public void LoadCargo_WhenExecuted_ShouldCallUpdateMethod(Warehouse warehouse, int id)
         {
             //Act
-            _warehouseService.LoadCargo(_warehouse, 1);
+            _warehouseService.LoadCargo(warehouse, id);
 
             //Assert
-            _mock.Verify(wr => wr.Update(It.IsAny<Warehouse>(), It.IsAny<int>()), Times.Once);
+            _mock.Verify(wr => wr.Update(warehouse, id), Times.Once);
         }
 
-        [Fact]
-        public void UnLoadCargo_WhenExecuted_ExpectedCallMethod()
+        [Theory, AutoData]
+        public void UnLoadCargo_WhenExecuted_ShouldCallUpdateMethod(Warehouse warehouse, int id)
         {
             //Act
-            _warehouseService.UnloadCargo(_warehouse, 5);
+            _warehouseService.UnloadCargo(warehouse, id);
 
             //Assert
-            _mock.Verify(wr => wr.Update(It.IsAny<Warehouse>(), It.IsAny<int>()), Times.Once);
+            _mock.Verify(wr => wr.Update(warehouse, id), Times.Once);
         }
 
-        [Fact]
-        public void UnLoadAllCargos_WhenExecuted_ExpectedCallMethod()
+        [Theory, AutoData]
+        public void UnLoadAllCargos_WhenExecuted_ShouldCallUpdateMethod(Warehouse warehouse, int id)
         {
             //Act
-            _warehouseService.UnloadAllCargos(_warehouse, 9);
+            _warehouseService.UnloadAllCargos(warehouse, id);
 
             //Assert
-            _mock.Verify(wr => wr.Update(It.IsAny<Warehouse>(), It.IsAny<int>()), Times.Once);
+            _mock.Verify(wr => wr.Update(warehouse, id), Times.Once);
         }
     }
 }

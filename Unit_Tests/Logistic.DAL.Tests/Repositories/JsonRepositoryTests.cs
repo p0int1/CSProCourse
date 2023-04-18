@@ -27,10 +27,7 @@ namespace Logistics.DAL.Tests.Repositories
             var result = _jsonRepository.Read(testPath);
 
             //Assert
-            using (new AssertionScope())
-            {
-                result.Should().BeEquivalentTo(_vehicleList);
-            }
+            result.Should().BeEquivalentTo(_vehicleList);
         }
 
         [Fact]

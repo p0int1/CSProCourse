@@ -2,37 +2,32 @@ using Logistic.ConsoleClient.Repositories;
 using Logistic.Models;
 using AutoFixture;
 using Xunit;
+using AutoFixture.Xunit2;
 
 namespace Logistic.DAL.Tests.Repositories
 {
     public class InMemoryRepositoryTests
     {
         private readonly IRepository<Vehicle> _vehicleRepository;
-        private readonly IRepository<Warehouse> _warehouseRepository;
-        private readonly Fixture _fixture;
 
         public InMemoryRepositoryTests()
         {
-            //Arrange
             _vehicleRepository = new InMemoryRepository<Vehicle>();
-            _warehouseRepository = new InMemoryRepository<Warehouse>();
-            _fixture = new Fixture();
         }
 
-        [Fact]
-        public void Create_WhenExecuted_ExpectedResult()
+        [Theory, AutoData]
+        public void Create_WhenExecuted_ExpectedResult(Vehicle vehicle)
         {
             //Arrange
-            _vehicleRepository.Create(_fixture.Create<Vehicle>());
-            _warehouseRepository.Create(_fixture.Create<Warehouse>());
+            _vehicleRepository.Create(vehicle);
+            int idCreatedVehicle = 1;
 
             //Act
-            var result1 = _vehicleRepository.Read(1);
-            var result2 = _warehouseRepository.Read(1);
+            var result = _vehicleRepository.Read(idCreatedVehicle);
 
             //Assert
-            Assert.Equal(1, result1.Id);
-            Assert.Equal(1, result2.Id);
+            Assert.Equal(1, result.Id);
+
         }
 
         [Theory]
@@ -41,7 +36,7 @@ namespace Logistic.DAL.Tests.Repositories
         public void Read_WhenExecuted_ExpectedResultOrNull(int id)
         {
             //Arrange
-            var vehicle = _fixture.Create<Vehicle>();
+            var vehicle = new Fixture().Create<Vehicle>();
             _vehicleRepository.Create(vehicle);
 
             //Act
@@ -64,37 +59,37 @@ namespace Logistic.DAL.Tests.Repositories
         [InlineData(0)]
         [InlineData(10)]
         [InlineData(30)]
-        public void ReadAll_WhenExecuted_ExpectedResult(int numberOfTimes)
+        public void ReadAll_WhenExecuted_ExpectedResult(int numberOfEntitiesCreated)
         {
             //Arrange
-            for (int i = 0; i < numberOfTimes; i++)
+            for (int i = 0; i < numberOfEntitiesCreated; i++)
             {
-                _vehicleRepository.Create(_fixture.Create<Vehicle>());
+                _vehicleRepository.Create(new Fixture().Create<Vehicle>());
             }
 
             //Act
             var result = _vehicleRepository.ReadAll();
 
             //Assert
-            Assert.Equal(numberOfTimes, result.Count);
+            Assert.Equal(numberOfEntitiesCreated, result.Count);
         }
 
         [Theory]
         [InlineData(10, 1)]
         [InlineData(15, 15)]
-        public void Delete_WhenExecuted_ExpectedTrueOrFalse(int numberOfTimes, int id)
+        public void Delete_WhenExecuted_ExpectedTrueOrFalse(int numberOfEntitiesCreated, int id)
         {
             //Arrange
-            for (int i = 0; i < numberOfTimes; i++)
+            for (int i = 0; i < numberOfEntitiesCreated; i++)
             {
-                _vehicleRepository.Create(_fixture.Create<Vehicle>());
+                _vehicleRepository.Create(new Fixture().Create<Vehicle>());
             }
 
             //Act
             var result = _vehicleRepository.Delete(id);
 
             //Assert
-            if (numberOfTimes >= id)
+            if (numberOfEntitiesCreated >= id)
             {
                 Assert.True(result);
             }
@@ -107,12 +102,12 @@ namespace Logistic.DAL.Tests.Repositories
         [Theory]
         [InlineData(10)]
         [InlineData(15)]
-        public void DeleteAll_WhenExecuted_ExpectedResult(int numberOfTimes)
+        public void DeleteAll_WhenExecuted_ExpectedResult(int numberOfEntitiesCreated)
         {
             //Arrange
-            for (int i = 0; i < numberOfTimes; i++)
+            for (int i = 0; i < numberOfEntitiesCreated; i++)
             {
-                _vehicleRepository.Create(_fixture.Create<Vehicle>());
+                _vehicleRepository.Create(new Fixture().Create<Vehicle>());
             }
 
             //Act
