@@ -8,3 +8,6 @@
 
 **Unit_Tests:** ДЗ 4. Тестування  
 Потрібно: https://lms.ithillel.ua/groups/63852332e83a597cf93d7a4e/homeworks/642346c10246b334f6bbd6e7
+
+**SQL_Query:** ДЗ 5. Створення БД
+Потрібно: https://lms.ithillel.ua/groups/63852332e83a597cf93d7a4e/homeworks/642b21088177e16a56b0c4d5
