@@ -1,35 +1,33 @@
--- DROP DATABASE Logistics
+IF DB_ID('Logistics') IS NOT NULL
+   DROP DATABASE Logistics;
 
--- создание базы данных
-CREATE DATABASE Logistics
+CREATE DATABASE Logistics;
+USE Logistics;
 
-USE Logistics
-
--- справочник тип транспорта
--- Car, Ship, Plane, Train
+GO
 CREATE TABLE VehicleType (
     Id INT PRIMARY KEY,
     VehicleName VARCHAR(20) UNIQUE
 );
 
--- таблица транспортов
+GO
 CREATE TABLE Vehicle (
     Id INT PRIMARY KEY IDENTITY,
-    VehicleType INT,
+    VehicleTypeId INT,
     VehicleNumber VARCHAR(20) UNIQUE,
     MaxCargoWeightKg INT,
     MaxCargoWeightPnd FLOAT,
     MaxCargoVolume FLOAT,
-    FOREIGN KEY (VehicleType) REFERENCES VehicleType(Id)
+    FOREIGN KEY (VehicleTypeId) REFERENCES VehicleType(Id)
 );
 
--- таблица складов
+GO
 CREATE TABLE Warehouse (
     Id INT PRIMARY KEY IDENTITY,
     WarehouseName VARCHAR(20)
 );
 
--- накладная
+GO
 CREATE TABLE Invoice (
     Id UNIQUEIDENTIFIER PRIMARY KEY,
     RecipientAddress VARCHAR(100),
@@ -38,27 +36,18 @@ CREATE TABLE Invoice (
     SenderPhoneNumber VARCHAR(20)
 );
 
--- таблица грузов
+GO
 CREATE TABLE Cargo (
     Id UNIQUEIDENTIFIER PRIMARY KEY,
     InvoiceId UNIQUEIDENTIFIER,
     CargoVolume FLOAT,
     CargoWeight INT,
-    CargoCode VARCHAR(20) UNIQUE FOREIGN KEY (InvoiceId) REFERENCES Invoice(Id)
-);
-
--- таблица связи VehicleCargo
-CREATE TABLE VehicleCargo (
-    VehicleId INT,
-    CargoId UNIQUEIDENTIFIER,
+    CargoCode VARCHAR(20) UNIQUE,
+    VehicleId INT NULL,
+    WarehouseId INT NULL,
+    FOREIGN KEY (InvoiceId) REFERENCES Invoice(Id),
     FOREIGN KEY (VehicleId) REFERENCES Vehicle(Id),
-    FOREIGN KEY (CargoId) REFERENCES Cargo(Id),
+    FOREIGN KEY (WarehouseId) REFERENCES Warehouse(Id)
 );
 
--- таблица связи WarehouseCargo
-CREATE TABLE WarehouseCargo (
-    WarehouseId INT,
-    CargoId UNIQUEIDENTIFIER,
-    FOREIGN KEY (WarehouseId) REFERENCES Warehouse(Id),
-    FOREIGN KEY (CargoId) REFERENCES Cargo(Id),
-);
+USE master;
