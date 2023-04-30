@@ -11,3 +11,6 @@
 
 **SQL_Query:** ДЗ 5. Створення БД  
 Потрібно: https://lms.ithillel.ua/groups/63852332e83a597cf93d7a4e/homeworks/642b21088177e16a56b0c4d5
+
+**Wpf_Client:** ДЗ 6. Перший GUI  
+Потрібно: https://lms.ithillel.ua/groups/63852332e83a597cf93d7a4e/homeworks/642b31bf0dc0be68f00b902b
