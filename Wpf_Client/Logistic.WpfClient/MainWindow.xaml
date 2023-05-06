@@ -1,0 +1,101 @@
+﻿<Window x:Class="Logistic.WpfClient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Logistic.WpfClient"
+        mc:Ignorable="d"
+        Title="Logistics" Height="450" Width="800" MinHeight="450" MinWidth="800" Icon="truck2_122340.ico">
+    <Window.Resources>
+        <Style x:Key="Default">
+            <Setter Property="Control.HorizontalAlignment" Value="Left"/>
+            <Setter Property="Control.VerticalAlignment" Value="Top"/>
+            <Setter Property="Control.Width" Value="110"/>
+            <Setter Property="Control.Height" Value="22"/>
+            <Setter Property="Control.Padding" Value="2"/>
+        </Style>
+        <Style TargetType="Button" x:Key="BottomLeft">
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Bottom"/>
+        </Style>
+        <Style TargetType="Button" x:Key="TopRight">
+            <Setter Property="Height" Value="22"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <TabControl x:Name="tabControl">
+            <TabItem Header="Vehicle">
+                <Grid Background="White">
+                    <ListView x:Name="lvVehicleList" Margin="10,10,293,10" SelectionChanged="lvVehicleList_SelectionChanged">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Path=Id}" Width="40"/>
+                                <GridViewColumn Header="Type" DisplayMemberBinding="{Binding Path=Type}" Width="80"/>
+                                <GridViewColumn Header="Number" DisplayMemberBinding="{Binding Path=Number}" Width="100"/>
+                                <GridViewColumn Header="MaxWeight" DisplayMemberBinding="{Binding Path=MaxCargoWeightKg}" Width="80"/>
+                                <GridViewColumn Header="MaxVolume" DisplayMemberBinding="{Binding Path=MaxCargoVolume}" Width="80"/>
+                                <GridViewColumn Header="TotalCargo" DisplayMemberBinding="{Binding Path=Cargos.Count}" Width="80"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    <GroupBox Header="Current vehicle" Margin="0,5,10,10" Width="278" HorizontalAlignment="Right">
+                        <Grid>
+                            <TextBlock Text="Vehicle type" Margin="20,10,0,0" Style="{StaticResource Default}"/>
+                            <ComboBox x:Name="typeOfVehicle" Margin="130,10,0,0" Padding="15,2" Style="{StaticResource Default}">
+                                <ComboBoxItem Content="Car" IsSelected="True"/>
+                                <ComboBoxItem Content="Ship"/>
+                                <ComboBoxItem Content="Plane"/>
+                                <ComboBoxItem Content="Train"/>
+                            </ComboBox>
+                            <TextBlock Text="Number of vehicle" Margin="20,50,0,0" Style="{StaticResource Default}"/>
+                            <TextBox x:Name="numberOfVehicle" Margin="130,50,0,0" Style="{StaticResource Default}"/>
+                            <TextBlock Text="Max WeightVehicle" Margin="20,90,0,0" Style="{StaticResource Default}"/>
+                            <TextBox x:Name="maxWeight" Margin="130,90,0,0" Style="{StaticResource Default}"/>
+                            <TextBlock Text="Maximum Volume" Margin="20,130,0,0" Style="{StaticResource Default}"/>
+                            <TextBox x:Name="maxVolume" Margin="130,130,0,0" Style="{StaticResource Default}"/>
+                            <Button x:Name="deleteBtn" Content="Delete" Margin="20,0,0,17" Width="65" Style="{StaticResource BottomLeft}" 
+                                    Click="deleteBtn_Click" Background="Coral" IsEnabled="False"/>
+                            <Button x:Name="cargoBtn" Content="Cargo . ." Margin="90,0,0,17" Width="80" Style="{StaticResource BottomLeft}" 
+                                    Click="cargoBtn_Click" Background="LimeGreen" IsEnabled="False"/>
+                            <Button x:Name="createBtn" Content="Create" Margin="175,0,0,17" Width="65" Style="{StaticResource BottomLeft}" 
+                                    Click="createBtn_Click" Background="Aqua"/>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Report">
+                <Grid Background="White">
+                    <GroupBox Header="Import report" Margin="5,0,404,5">
+                        <Grid>
+                            <TextBox x:Name="pathToFile" Text="path to import file . . ." Margin="10,10,51,0" Width="NaN" 
+                                     HorizontalAlignment="Stretch" Style="{StaticResource Default}" IsEnabled="False" IsReadOnly="True"/>
+                            <Button x:Name="openFileBtn" Content=". . ." Margin="0,10,10,0" Width="36" Style="{StaticResource TopRight}" 
+                                    Click="openFileBtn_Click"/>
+                            <Button x:Name="importBtn" Content="Import" Margin="0,37,10,0" Width="75" Style="{StaticResource TopRight}" 
+                                    Click="importBtn_Click"/>
+                            <TextBox x:Name="showImportFile" Margin="10,64,10,10" TextWrapping="Wrap" Width="NaN" IsReadOnly="True"/>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Header="Export report" Margin="0,0,5,5" HorizontalAlignment="Right" Width="390">
+                        <Grid>
+                            <TextBox x:Name="pathToFoder" Text="path to report folder . . ."  Margin="10,10,0,0" Width="317" 
+                                     Style="{StaticResource Default}" IsEnabled="False" IsReadOnly="True"/>
+                            <Button x:Name="openFolderBtn" Content=". . ." Margin="0,10,10,0" Width="36" Style="{StaticResource TopRight}" 
+                                    Click="openFolderBtn_Click"/>
+                            <ComboBox x:Name="typeOfReport" Margin="213,37,0,0" Padding="15,1" Width="75" Style="{StaticResource Default}">
+                                <ComboBoxItem Content="json" IsSelected="True"/>
+                                <ComboBoxItem Content="xml"/>
+                            </ComboBox>
+                            <Button x:Name="exportBtn" Content="Export" Margin="0,37,10,0" Width="75" Style="{StaticResource TopRight}" 
+                                    Click="exportBtn_Click"/>
+                            <TextBox x:Name="showExportFile" Margin="0,64,0,10" TextWrapping="Wrap" Width="358" IsReadOnly="True"/>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
