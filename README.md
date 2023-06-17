@@ -14,3 +14,6 @@
 
 **Wpf_Client:** ДЗ 6. Перший GUI  
 Потрібно: https://lms.ithillel.ua/groups/63852332e83a597cf93d7a4e/homeworks/642b31bf0dc0be68f00b902b
+
+**Web_API:** ДЗ 7. Web Server. Rest API  
+Потрібно: https://lms.ithillel.ua/groups/63852332e83a597cf93d7a4e/homeworks/64565bcfd5ae6027ecf8bce3
