@@ -1,4 +1,4 @@
-# CSProCourse
+# CSProCourse [Комп'ютерна школа Hillel]
 
 **HomeWork_1:** ДЗ 2. Перший клас.  
 Потрібно: https://lms.ithillel.ua/groups/63852332e83a597cf93d7a4e/homeworks/63efab0a616a260d5e4020ff 
